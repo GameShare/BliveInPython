@@ -8,6 +8,8 @@ class Example(QtGui.QWidget):
 	def __init__(self):
 		super(Example, self).__init__()
 		self.label = QtGui.QLabel(self)
+		self.stackBottom = [0,0]
+		self.temp = [0,0]
 		self.initUI()
 	def initUI(self):
 		#self.setGeometry(300, 300, 280, 170)
@@ -36,13 +38,18 @@ class Example(QtGui.QWidget):
 		qp.fillRect(self.label.x(),self.label.y()-5,self.label.width(),self.label.height()+10, QtGui.QColor(0,0,0,169))
 		qp.end()
 
+	def keyPressEvent(self, e):
+	 	if e.key() == QtCore.Qt.Key_Escape:
+			self.close()
+
+	def mousePressEvent(self, e):
+		self.temp = [e.x(), e.y()]
+
+	def mouseMoveEvent(self,e):  
+		self.setGeometry(self.x()+e.x()-self.temp[0], self.y()+e.y()-self.temp[1], self.width(), self.height())
+		self.temp[0]
+
 app = QtGui.QApplication(sys.argv)
 trans = Example()
-
-
-# trans.setAutoFillBackground(True)
-# palette = QtGui.QPalette()
-# palette.setColor(QtGui.QPalette.Background, QtGui.QColor(0,253,0,8))
-# trans.setPalette(palette)
 
 sys.exit(app.exec_())
