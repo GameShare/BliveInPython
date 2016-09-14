@@ -16,7 +16,7 @@ class Example(QtGui.QWidget):
 	
 	def __init__(self):
 		super(Example, self).__init__()
-		self.label = [QtGui.QLabel(self)]
+		self.label = []
 		self.labelNum = 0
 		self.temp = [0,0]
 
@@ -39,6 +39,7 @@ class Example(QtGui.QWidget):
 
 	def OnTimer(self):
 		self.timer.stop()
+		print self.label
 		if transMessage != "":
 			self.insertMessage(transMessage)
 		temp = len(self.label)-2
@@ -93,7 +94,7 @@ class Example(QtGui.QWidget):
 		tempLabel.setText(str)
 		tempLabel.setFont(QtGui.QFont("Microsoft Yahei",25))
 		if self.labelNum != 0:
-			tempLabel.setGeometry(self.label[self.labelNum-1].x(), self.label[self.labelNum-1].y()+self.label[self.labelNum-1].height()+30,self.label[self.labelNum-1].width(),self.label[self.labelNum-1].height())
+			tempLabel.setGeometry(self.label[self.labelNum-1].x(), self.label[self.labelNum-1].y()+self.label[self.labelNum-1].height(),self.label[self.labelNum-1].width(),self.label[self.labelNum-1].height())
 		else:
 			self.timer.start( time )
 		# 自动调整大小
@@ -114,7 +115,7 @@ class Example(QtGui.QWidget):
 class Servers(SRH):  
     def handle(self):  
         print 'got connection from ',self.client_address  
-        self.wfile.write('connection %s:%s at %s succeed!' % (host,port,ctime()))  
+        # self.wfile.write('connection %s:%s at %s succeed!' % (host,port,ctime()))  
         while True:  
             data = self.request.recv(1024)  
             if not data:   
