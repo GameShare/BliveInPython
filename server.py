@@ -3,6 +3,7 @@
 import sys
 from PyQt4 import QtGui, QtCore
 import sip
+time = 10000
 
 class Example(QtGui.QWidget):
 	
@@ -21,22 +22,10 @@ class Example(QtGui.QWidget):
 		self.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)
 		# 去除边框
 		self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-		
-		self.label[0].setText('Hello World!')
-		self.label[0].setFont(QtGui.QFont("Microsoft Yahei",50,QtGui.QFont.Bold))
-		# 自动调整大小
-		self.label[0].adjustSize()
-		self.label[0].setAlignment(QtCore.Qt.AlignCenter)
-		# 设置颜色
-		pe = QtGui.QPalette() 
-		pe.setColor(QtGui.QPalette.WindowText,QtGui.QColor(255,255,255,255))#设置字体颜色 
-		self.label[0].setPalette(pe)
-
-		self.labelNum = 1
 
 		self.timer=QtCore.QTimer()
 		QtCore.QObject.connect(self.timer,QtCore.SIGNAL("timeout()"), self.OnTimer)
-		self.timer.start( 2000 )
+
 		self.qp = QtGui.QPainter()
 		self.adjustSize()
 		self.show()
@@ -58,11 +47,11 @@ class Example(QtGui.QWidget):
 		print self.label
 		self.labelNum -= 1
 		if len(self.label) != 0:
-			self.timer.start( 2000 )
+			self.timer.start( time )
 
 
 	def paintEvent(self, e):
-		
+
 		self.qp.begin(self)
 		tempPosi = [0, 0];
 		for i in self.label:
@@ -92,11 +81,11 @@ class Example(QtGui.QWidget):
 	def insertMessage(self, str):
 		tempLabel = QtGui.QLabel(self)
 		tempLabel.setText(str)
-		tempLabel.setFont(QtGui.QFont("Microsoft Yahei",50,QtGui.QFont.Bold))
+		tempLabel.setFont(QtGui.QFont("Microsoft Yahei",20,QtGui.QFont.Bold))
 		if self.labelNum != 0:
 			tempLabel.setGeometry(self.label[self.labelNum-1].x(), self.label[self.labelNum-1].y()+self.label[self.labelNum-1].height(),self.label[self.labelNum-1].width(),self.label[self.labelNum-1].height())
 		else:
-			self.timer.start( 2000 )
+			self.timer.start( time )
 		# 自动调整大小
 		tempLabel.adjustSize()
 		tempLabel.setAlignment(QtCore.Qt.AlignCenter)
