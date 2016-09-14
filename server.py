@@ -1,10 +1,17 @@
 #coding=utf-8
-
-import sys
-from PyQt4 import QtGui, QtCore
 import sip
-time = 10000
+import sys
+import SocketServer  
+import threading
+from SocketServer import StreamRequestHandler as SRH  
+from time import ctime  
+from PyQt4 import QtGui, QtCore
 
+time = 10000
+host = '127.0.0.1'  
+port = 8883
+addr = (host,port)  
+transMessage = ""
 class Example(QtGui.QWidget):
 	
 	def __init__(self):
@@ -32,7 +39,8 @@ class Example(QtGui.QWidget):
 
 	def OnTimer(self):
 		self.timer.stop()
-
+		if transMessage != "":
+			self.insertMessage(transMessage)
 		temp = len(self.label)-2
 		for i in self.label[:0:-1]:
 			i.setGeometry(self.label[temp].x(), self.label[temp].y(), i.width(), i.height())
@@ -64,7 +72,9 @@ class Example(QtGui.QWidget):
 
 	def keyPressEvent(self, e):
 
-	 	if e.key() == QtCore.Qt.Key_Escape:
+		if e.key() == QtCore.Qt.Key_Escape:
+			server.shutdown()
+			server.server_close()
 			self.close()
 		else:
 			if e.key() == QtCore.Qt.Key_A:
@@ -81,9 +91,9 @@ class Example(QtGui.QWidget):
 	def insertMessage(self, str):
 		tempLabel = QtGui.QLabel(self)
 		tempLabel.setText(str)
-		tempLabel.setFont(QtGui.QFont("Microsoft Yahei",20,QtGui.QFont.Bold))
+		tempLabel.setFont(QtGui.QFont("Microsoft Yahei",25))
 		if self.labelNum != 0:
-			tempLabel.setGeometry(self.label[self.labelNum-1].x(), self.label[self.labelNum-1].y()+self.label[self.labelNum-1].height(),self.label[self.labelNum-1].width(),self.label[self.labelNum-1].height())
+			tempLabel.setGeometry(self.label[self.labelNum-1].x(), self.label[self.labelNum-1].y()+self.label[self.labelNum-1].height()+30,self.label[self.labelNum-1].width(),self.label[self.labelNum-1].height())
 		else:
 			self.timer.start( time )
 		# 自动调整大小
@@ -101,8 +111,29 @@ class Example(QtGui.QWidget):
 
 		self.adjustSize()
 
+class Servers(SRH):  
+    def handle(self):  
+        print 'got connection from ',self.client_address  
+        self.wfile.write('connection %s:%s at %s succeed!' % (host,port,ctime()))  
+        while True:  
+            data = self.request.recv(1024)  
+            if not data:   
+                break  
+            print data  
+            print "RECV from ", self.client_address[0]  
+            transMessage = data
+            # trans.insertMessage(data)
+            # self.request.send(data)
+		
 app = QtGui.QApplication(sys.argv)
 trans = Example()
-
+server = SocketServer.ThreadingTCPServer(addr,Servers) 
+# Start a thread with the server -- that thread will then start one
+# more thread for each request
+server_thread = threading.Thread(target=server.serve_forever)
+# Exit the server thread when the main thread terminates
+server_thread.daemon = True
+server_thread.start()
+print "Server loop running in thread:", server_thread.name
 
 sys.exit(app.exec_())
