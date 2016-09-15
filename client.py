@@ -4,7 +4,7 @@ import sys
 import socket
 from PyQt4 import QtGui, QtCore
 
-time = 1000
+time = 10000
 HOST='127.0.0.1'
 PORT=8883
 
