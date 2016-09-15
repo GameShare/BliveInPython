@@ -96,7 +96,7 @@ class Example(QtGui.QWidget):
 
 	def insertMessage(self, str):
 		tempLabel = QtGui.QLabel(self)
-		tempLabel.setText(str)
+		tempLabel.setText(str.decode("utf-8"))
 		tempLabel.setFont(QtGui.QFont("Microsoft Yahei",25))
 		if self.labelNum != 0:
 			tempLabel.setGeometry(self.label[self.labelNum-1].x(), self.label[self.labelNum-1].y()+self.label[self.labelNum-1].height(),self.label[self.labelNum-1].width(),self.label[self.labelNum-1].height())
