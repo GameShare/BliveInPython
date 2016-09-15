@@ -8,8 +8,8 @@ import re
 import json
 import time
 
-host = '127.0.0.1'  
-port = 8080
+host = '133.130.116.215'  
+port = 80
 addr = (host,port)
 
 OriginRoomId = 226
