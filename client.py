@@ -6,7 +6,7 @@ from PyQt4 import QtGui, QtCore
 
 time = 1000
 HOST='133.130.116.215'
-PORT=80
+PORT=8080
 
 class Example(QtGui.QWidget):
 	

@@ -9,7 +9,7 @@ import json
 import time
 
 host = '133.130.116.215'  
-port = 80
+port = 8080
 addr = (host,port)
 
 OriginRoomId = 226
