@@ -4,8 +4,8 @@ import sys
 import socket
 from PyQt4 import QtGui, QtCore
 
-time = 10000
-HOST='127.0.0.1'
+time = 1000
+HOST='133.130.116.215'
 PORT=8883
 
 class Example(QtGui.QWidget):
@@ -84,7 +84,7 @@ class Example(QtGui.QWidget):
 			self.close()
 		else:
 			if e.key() == QtCore.Qt.Key_A:
-				self.insertMessage("test")
+				self.insertMessage("test\ntest")
 
 
 	def mousePressEvent(self, e):
