@@ -1,5 +1,5 @@
 #coding=utf-8
-import sip
+
 import sys
 import socket
 from PyQt4 import QtGui, QtCore
