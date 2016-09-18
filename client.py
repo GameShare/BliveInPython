@@ -60,7 +60,8 @@ class Example(QtGui.QWidget):
 		s.sendall(cmd)
 		data=s.recv(1024)
 		print data
-		self.insertMessage(data)
+		if data != "-1":
+			self.insertMessage(data)
 		s.close()
 
 		self.timer.start( time )
@@ -84,7 +85,7 @@ class Example(QtGui.QWidget):
 			self.close()
 		else:
 			if e.key() == QtCore.Qt.Key_A:
-				self.insertMessage("test\ntest")
+				self.insertMessage("test")
 
 
 	def mousePressEvent(self, e):

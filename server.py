@@ -1,4 +1,5 @@
 #coding=utf-8
+
 import SocketServer  
 import threading
 from SocketServer import StreamRequestHandler as SRH  
@@ -12,7 +13,7 @@ host = '133.130.116.215'
 port = 8080
 addr = (host,port)
 
-OriginRoomId = 226
+OriginRoomId = [226, 83264]
  
 roomid = -1
 roomStatus = -1
@@ -26,8 +27,12 @@ class Servers(SRH):
             if not data:   
                 break  
             print data  
-            print "RECV from ", self.client_address[0]  
-            self.request.send(recentResult)
+            print "RECV from ", self.client_address[0]
+            if recentResult != "":
+                self.request.send(recentResult)
+                recentResult = ""
+            else
+                self.request.send("-1")
 
 def checkRoomInfo(RoomId):
     req = urllib2.Request('http://live.bilibili.com/live/getInfo?roomid=' + str(RoomId))
@@ -43,8 +48,8 @@ def checkRoomInfo(RoomId):
 def downloadVideo(RoomId):
     print 1
 
-def updateText():
-    req = urllib2.Request("http://live.bilibili.com/"+str(OriginRoomId))
+def updateText(id):
+    req = urllib2.Request("http://live.bilibili.com/"+str(id))
     response = urllib2.urlopen(req)
     thepage = response.read().decode('utf-8')
     pattern = re.compile(r'var ROOMID = \d*?;')
@@ -58,7 +63,7 @@ def updateText():
         # downloadVideo(matchRes)
     else:
         return -1
-        print "无法获取房间的真实ID！"
+        print "无法获取房间"+str(id)+"的真实ID！请手动检查！"
 
 server = SocketServer.ThreadingTCPServer(addr,Servers) 
 
@@ -69,21 +74,33 @@ server_thread.daemon = True
 server_thread.start()
 print "Server loop running in thread:", server_thread.name
 
-while 1:
-    if roomid != -1:
-        roomStatus = checkRoomInfo(roomid)
-        if roomStatus != -1:
-            recentResult = "房间状态"+roomStatus.encode("utf-8")
-    else:
-        roomid = updateText()
 
+trueRoomId = [0]*len(OriginRoomId)
+temp = 0
+for i in OriginRoomId:
+    roomid = updateText(i)
+    trueRoomId[temp] = roomid
     if roomid == -1:
-        recentResult = "无法获取房间的真实ID！"
+        recentResult += "未找到房间" + str(i) + "的真实ID。\n"
     else:
-        if roomStatus == -1:
-            recentResult = "找到房间ID:"+str(roomid)
+        recentResult += "找到房间" + str(i) + "的真实ID"+ str(roomid) + "。\n"
+    
+    temp += 1  
+    time.sleep(1)
 
-    time.sleep(10)
+while 1:
+    temp = 0
+    for i in trueRoomId:
+        if i != -1:
+            roomStatus = checkRoomInfo(i)
+            if roomStatus != -1:
+                recentResult += "房间"+str(OriginRoomId[temp])+"的状态为:"+roomStatus.encode("utf-8")+".\n"
+            else:
+                recentResult += "房间"+str(OriginRoomId[temp])+"的状态出错!\n"
+        
+        temp += 1
+        time.sleep(1)
+    time.sleep(60)
 
 
 
