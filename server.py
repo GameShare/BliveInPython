@@ -31,7 +31,7 @@ class Servers(SRH):
             if recentResult != "":
                 self.request.send(recentResult)
                 recentResult = ""
-            else
+            else:
                 self.request.send("-1")
 
 def checkRoomInfo(RoomId):
