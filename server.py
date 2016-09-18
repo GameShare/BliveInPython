@@ -18,8 +18,10 @@ OriginRoomId = [226, 83264]
 roomid = -1
 roomStatus = -1
 recentResult = ""
+
 class Servers(SRH):  
-    def handle(self):  
+    def handle(self):
+        global recentResult  
         print 'got connection from ',self.client_address  
         # self.wfile.write('connection %s:%s at %s succeed!' % (host,port,ctime()))  
         while True:  
