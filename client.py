@@ -48,7 +48,7 @@ class Example(QtGui.QWidget):
 
 		# 自动调整大小
 		
-		self.label.setAlignment(QtCore.Qt.AlignCenter)
+		self.label.setAlignment(QtCore.Qt.AlignLeft)
 
 		self.label.adjustSize()
 		self.adjustSize()

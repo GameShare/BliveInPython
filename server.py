@@ -13,7 +13,7 @@ host = '133.130.116.215'
 port = 8080
 addr = (host,port)
 
-OriginRoomId = [226, 83264]
+OriginRoomId = [226, 83264, 17111, 157901, 17770, 1267341, 98612, 60470, 57119, 36613, 323467, 39019, 44055, 37755, 32055, 17784, 226, 30507, 5299]
  
 roomid = -1
 roomStatus = -1
@@ -42,8 +42,8 @@ def checkRoomInfo(RoomId):
     thepage = response.read().decode('utf-8')
     dictRes = json.loads(thepage)
     try:
-        print dictRes["data"]['_status']
-        return dictRes["data"]['_status']
+        # print dictRes["data"]['_status']
+        return dictRes
     except:
         return -1
 
@@ -96,7 +96,7 @@ while 1:
         if i != -1:
             roomStatus = checkRoomInfo(i)
             if roomStatus != -1:
-                recentResult += "房间"+str(OriginRoomId[temp])+"的状态为:"+roomStatus.encode("utf-8")+".\n"
+                recentResult += dictRes["data"]['ANCHOR_NICK_NAME'].encode("utf-8")+"的房间"+str(OriginRoomId[temp])+"的状态为:"+dictRes["data"]['_status'].encode("utf-8")+".\n"
             else:
                 recentResult += "房间"+str(OriginRoomId[temp])+"的状态出错!\n"
         
