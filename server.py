@@ -96,7 +96,7 @@ while 1:
         if i != -1:
             roomStatus = checkRoomInfo(i)
             if roomStatus != -1:
-                recentResult += dictRes["data"]['ANCHOR_NICK_NAME'].encode("utf-8")+"的房间"+str(OriginRoomId[temp])+"的状态为:"+dictRes["data"]['_status'].encode("utf-8")+".\n"
+                recentResult += roomStatus["data"]['ANCHOR_NICK_NAME'].encode("utf-8")+"的房间"+str(OriginRoomId[temp])+"的状态为:"+roomStatus["data"]['_status'].encode("utf-8")+".\n"
             else:
                 recentResult += "房间"+str(OriginRoomId[temp])+"的状态出错!\n"
         

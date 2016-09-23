@@ -182,15 +182,18 @@ class ExampleList:
 	def OnTimer(self):
 		# print 1
 		# self.insertMessage(str(time.clock()))
-		s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-		s.connect((HOST,PORT))
-		cmd = 'new data?'
-		s.sendall(cmd)
-		data=s.recv(1024)
-		# print data
-		if data != "-1":
-			self.insertMessage(data)
-		s.close()
+		try:
+			s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+			s.connect((HOST,PORT))
+			cmd = 'new data?'
+			s.sendall(cmd)
+			data=s.recv(1024)
+			# print data
+			if data != "-1":
+				self.insertMessage(data)
+			s.close()
+		except:
+			self.insertMessage("socket出错！")
 
 
 
