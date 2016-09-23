@@ -31,7 +31,7 @@ class Servers(SRH):
             print data  
             print "RECV from ", self.client_address[0]
             if recentResult != "":
-                self.request.send(recentResult)
+                self.request.send(recentResult[:-1])
                 recentResult = ""
             else:
                 self.request.send("-1")

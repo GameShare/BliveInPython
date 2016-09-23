@@ -7,7 +7,8 @@ from PyQt4 import QtGui, QtCore
 
 layer = 20
 timeP = 1000
-delay = 4000
+delay = 9000
+slot = 5000
 HOST='133.130.116.215'
 PORT=8080
 
@@ -167,7 +168,7 @@ class ExampleList:
 		self.MNum = 0
 		self.timer=QtCore.QTimer()
 		QtCore.QObject.connect(self.timer,QtCore.SIGNAL("timeout()"), self.OnTimer)
-		self.timer.start( 500 )
+		self.timer.start( slot )
 
 	def insertMessage(self, s):
 		tempM = Example()
@@ -186,7 +187,7 @@ class ExampleList:
 		cmd = 'new data?'
 		s.sendall(cmd)
 		data=s.recv(1024)
-		print data
+		# print data
 		if data != "-1":
 			self.insertMessage(data)
 		s.close()
