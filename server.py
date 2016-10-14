@@ -29,6 +29,7 @@ class Servers(SRH):
 
 def checkRoomInfo(RoomId):
     req = urllib2.Request('http://live.bilibili.com/live/getInfo?roomid=' + str(RoomId))
+    req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.8.1.14) Gecko/20080404 (FoxPlus) Firefox/2.0.0.14')
     response = urllib2.urlopen(req)
     thepage = response.read().decode('utf-8')
     dictRes = json.loads(thepage)
@@ -43,6 +44,7 @@ def downloadVideo(RoomId):
 
 def updateText(id):
     req = urllib2.Request("http://live.bilibili.com/"+str(id))
+    req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.8.1.14) Gecko/20080404 (FoxPlus) Firefox/2.0.0.14')
     response = urllib2.urlopen(req)
     thepage = response.read().decode('utf-8')
     pattern = re.compile(r'var ROOMID = \d*?;')
