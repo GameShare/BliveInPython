@@ -21,9 +21,9 @@ class Servers(SRH):
                 break  
             print data  
             print "RECV from ", self.client_address[0]
-            if recentResult != "":
-                self.request.send(recentResult[:-1])
-                recentResult = ""
+            if recentResult != []:
+                self.request.send(recentResult[0][:-1])
+                recentResult = recentResult[1:]
             else:
                 self.request.send("-1")
 
@@ -59,6 +59,7 @@ def updateText(id):
         print "无法获取房间"+str(id)+"的真实ID！请手动检查！"
 
 
+# server start
 iniFilePath = "./setting.ini"
 config = ConfigObj(iniFilePath,encoding='UTF8')
 if not("parameter" in config):
@@ -70,32 +71,29 @@ if not("parameter" in config):
 else:
     host = config["parameter"]["host"]  
     port = int(config["parameter"]["port"])
-    addr = (host, port)
     OriginRoomId = config["parameter"]["OriginRoomId"]
+    addr = (host, port)
      
     roomid = -1
-    roomStatus = -1
-    recentResult = ""
+    roomStatus = [0]*len(OriginRoomId)
+    trueRoomId = [0]*len(OriginRoomId)
+    recentResult = []
 
     server = SocketServer.ThreadingTCPServer(addr,Servers) 
-
-
     server_thread = threading.Thread(target=server.serve_forever)
     # Exit the server thread when the main thread terminates
     server_thread.daemon = True
     server_thread.start()
     print "Server loop running in thread:", server_thread.name
 
-
-    trueRoomId = [0]*len(OriginRoomId)
     temp = 0
     for i in OriginRoomId:
         roomid = updateText(int(i))
         trueRoomId[temp] = roomid
         if roomid == -1:
-            recentResult += "未找到房间" + i + "的真实ID。\n"
-        else:
-            recentResult += "找到房间" + i + "的真实ID"+ str(roomid) + "。\n"
+            recentResult += ["未找到房间" + i + "的真实ID。\n"]
+        # else:
+        #     recentResult += "找到房间" + i + "的真实ID"+ str(roomid) + "。\n"
         
         temp += 1  
         time.sleep(1)
@@ -104,11 +102,15 @@ else:
         temp = 0
         for i in trueRoomId:
             if i != -1:
-                roomStatus = checkRoomInfo(i)
-                if roomStatus != -1:
-                    recentResult += roomStatus["data"]['ANCHOR_NICK_NAME'].encode("utf-8")+"的房间"+OriginRoomId[temp]+"的状态为:"+roomStatus["data"]['_status'].encode("utf-8")+".\n"
+                nowRoomStatus = checkRoomInfo(i)
+                if nowRoomStatus != -1:
+                    if nowRoomStatus["data"]['_status'] == 'off' and roomStatus[temp] == 1:
+                        recentResult += [nowRoomStatus["data"]['ANCHOR_NICK_NAME'].encode("utf-8")+"的房间"+"关闭了！.\n"]
+                    else:
+                        if nowRoomStatus["data"]['_status'] == 'on' and roomStatus[temp] == 0:
+                            recentResult += [nowRoomStatus["data"]['ANCHOR_NICK_NAME'].encode("utf-8")+"的房间"+"开始直播了！.\n"]
                 else:
-                    recentResult += "房间"+OriginRoomId[temp]+"的状态出错!\n"
+                    recentResult += ["房间"+OriginRoomId[temp]+"的状态出错!\n"]
             
             temp += 1
             time.sleep(1)
