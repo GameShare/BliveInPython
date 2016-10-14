@@ -87,6 +87,7 @@ else:
     print "Server loop running in thread:", server_thread.name
 
     temp = 0
+    print OriginRoomId
     for i in OriginRoomId:
         roomid = updateText(int(i))
         trueRoomId[temp] = roomid
@@ -106,9 +107,11 @@ else:
                 if nowRoomStatus != -1:
                     if nowRoomStatus["data"]['_status'] == 'off' and roomStatus[temp] == 1:
                         recentResult += [nowRoomStatus["data"]['ANCHOR_NICK_NAME'].encode("utf-8")+"的房间"+"关闭了！.\n"]
+                        roomStatus[temp] == 0
                     else:
                         if nowRoomStatus["data"]['_status'] == 'on' and roomStatus[temp] == 0:
                             recentResult += [nowRoomStatus["data"]['ANCHOR_NICK_NAME'].encode("utf-8")+"的房间"+"开始直播了！.\n"]
+                            roomStatus[temp] == 1
                 else:
                     recentResult += ["房间"+OriginRoomId[temp]+"的状态出错!\n"]
             
