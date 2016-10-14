@@ -94,8 +94,7 @@ else:
         if roomid == -1:
             recentResult += ["未找到房间" + i + "的真实ID。\n"]
         # else:
-        #     recentResult += "找到房间" + i + "的真实ID"+ str(roomid) + "。\n"
-        
+        #     recentResult += "找到房间" + i + "的真实ID"+ str(roomid) + "。\n"       
         temp += 1  
         time.sleep(1)
 
