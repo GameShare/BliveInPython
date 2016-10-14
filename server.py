@@ -1,4 +1,5 @@
 #coding=utf-8
+from configobj import ConfigObj
 
 import SocketServer  
 import threading
@@ -8,16 +9,6 @@ import urllib2
 import re
 import json
 import time
-
-host = '133.130.116.215'  
-port = 8080
-addr = (host,port)
-
-OriginRoomId = [226, 83264, 17111, 157901, 17770, 1267341, 98612, 60470, 57119, 36613, 323467, 39019, 44055, 37755, 32055, 17784, 226, 30507, 5299]
- 
-roomid = -1
-roomStatus = -1
-recentResult = ""
 
 class Servers(SRH):  
     def handle(self):
@@ -67,42 +58,61 @@ def updateText(id):
         return -1
         print "无法获取房间"+str(id)+"的真实ID！请手动检查！"
 
-server = SocketServer.ThreadingTCPServer(addr,Servers) 
+
+iniFilePath = "./setting.ini"
+config = ConfigObj(iniFilePath,encoding='UTF8')
+if not("parameter" in config):
+    config["parameter"] = {}
+    config["parameter"]["host"] = '0.0.0.0'
+    config["parameter"]["port"] = '80'
+    config["parameter"]["OriginRoomId"] = [1]
+    print "请手动修改配置文件！"
+else:
+    host = config["parameter"]["host"]  
+    port = int(config["parameter"]["port"])
+    addr = (host, port)
+    OriginRoomId = config["parameter"]["OriginRoomId"]
+     
+    roomid = -1
+    roomStatus = -1
+    recentResult = ""
+
+    server = SocketServer.ThreadingTCPServer(addr,Servers) 
 
 
-server_thread = threading.Thread(target=server.serve_forever)
-# Exit the server thread when the main thread terminates
-server_thread.daemon = True
-server_thread.start()
-print "Server loop running in thread:", server_thread.name
+    server_thread = threading.Thread(target=server.serve_forever)
+    # Exit the server thread when the main thread terminates
+    server_thread.daemon = True
+    server_thread.start()
+    print "Server loop running in thread:", server_thread.name
 
 
-trueRoomId = [0]*len(OriginRoomId)
-temp = 0
-for i in OriginRoomId:
-    roomid = updateText(i)
-    trueRoomId[temp] = roomid
-    if roomid == -1:
-        recentResult += "未找到房间" + str(i) + "的真实ID。\n"
-    else:
-        recentResult += "找到房间" + str(i) + "的真实ID"+ str(roomid) + "。\n"
-    
-    temp += 1  
-    time.sleep(1)
-
-while 1:
+    trueRoomId = [0]*len(OriginRoomId)
     temp = 0
-    for i in trueRoomId:
-        if i != -1:
-            roomStatus = checkRoomInfo(i)
-            if roomStatus != -1:
-                recentResult += roomStatus["data"]['ANCHOR_NICK_NAME'].encode("utf-8")+"的房间"+str(OriginRoomId[temp])+"的状态为:"+roomStatus["data"]['_status'].encode("utf-8")+".\n"
-            else:
-                recentResult += "房间"+str(OriginRoomId[temp])+"的状态出错!\n"
+    for i in OriginRoomId:
+        roomid = updateText(int(i))
+        trueRoomId[temp] = roomid
+        if roomid == -1:
+            recentResult += "未找到房间" + i + "的真实ID。\n"
+        else:
+            recentResult += "找到房间" + i + "的真实ID"+ str(roomid) + "。\n"
         
-        temp += 1
+        temp += 1  
         time.sleep(1)
-    time.sleep(60)
+
+    while 1:
+        temp = 0
+        for i in trueRoomId:
+            if i != -1:
+                roomStatus = checkRoomInfo(i)
+                if roomStatus != -1:
+                    recentResult += roomStatus["data"]['ANCHOR_NICK_NAME'].encode("utf-8")+"的房间"+OriginRoomId[temp]+"的状态为:"+roomStatus["data"]['_status'].encode("utf-8")+".\n"
+                else:
+                    recentResult += "房间"+OriginRoomId[temp]+"的状态出错!\n"
+            
+            temp += 1
+            time.sleep(1)
+        time.sleep(60)
 
 
 
