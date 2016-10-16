@@ -13,14 +13,14 @@ import time
 class Servers(SRH):  
     def handle(self):
         global recentResult  
-        print 'got connection from ',self.client_address  
+        # print 'got connection from ',self.client_address  
         # self.wfile.write('connection %s:%s at %s succeed!' % (host,port,ctime()))  
         while True:  
             data = self.request.recv(1024)  
             if not data:   
                 break  
-            print data  
-            print "RECV from ", self.client_address[0]
+            # print data  
+            # print "RECV from ", self.client_address[0]
             if recentResult != []:
                 self.request.send(recentResult[0][:-1])
                 recentResult = recentResult[1:]
@@ -108,11 +108,11 @@ else:
                 if nowRoomStatus != -1:
                     if nowRoomStatus["data"]['_status'] == 'off' and roomStatus[temp] == 1:
                         recentResult += [nowRoomStatus["data"]['ANCHOR_NICK_NAME'].encode("utf-8")+"的房间"+"关闭了！.\n"]
-                        roomStatus[temp] == 0
+                        roomStatus[temp] = 0
                     else:
                         if nowRoomStatus["data"]['_status'] == 'on' and roomStatus[temp] == 0:
                             recentResult += [nowRoomStatus["data"]['ANCHOR_NICK_NAME'].encode("utf-8")+"的房间"+"开始直播了！.\n"]
-                            roomStatus[temp] == 1
+                            roomStatus[temp] = 1
                 else:
                     recentResult += ["房间"+OriginRoomId[temp]+"的状态出错!\n"]
             

@@ -29,7 +29,7 @@ def OnTimer():
 
 def insertMessage(str):
 	parameterStr = '{"ShortcutFileName":"DesktopToast.Proxy.lnk","ShortcutTargetFilePath":"C:DesktopToast.Proxy.exe","ToastTitle":"DesktopToast Proxy Sample","ToastBody":"' + str.decode('utf-8') + u'","AppId":"DesktopToast.Proxy",}'
-	print sys.getfilesystemencoding()
+	# print sys.getfilesystemencoding()
 	sub = subprocess.Popen(["DesktopToast.Proxy.exe",parameterStr.encode(sys.getfilesystemencoding())])
 
 def appQuit():
