@@ -94,7 +94,7 @@ else:
         roomid = updateText(int(i))
         trueRoomId[temp] = roomid
         if roomid == -1:
-            recentResult += ["未找到房间" + i + "的真实ID。\n"]
+            recentResult += ["未找到房间" + i.encode("utf-8") + "的真实ID。\n"]
         # else:
         #     recentResult += "找到房间" + i + "的真实ID"+ str(roomid) + "。\n"       
         temp += 1  
