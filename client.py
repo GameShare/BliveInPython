@@ -20,11 +20,13 @@ def OnTimer():
 		cmd = 'new data?'
 		s.sendall(cmd)
 		data=s.recv(1024)
+		s.close()
 		# print data
 		if data != "-1":
 			insertMessage(data)
-		s.close()
+		# s.close()
 	except:
+		s.close()
 		insertMessage("socket出错！")
 
 def insertMessage(str):
