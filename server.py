@@ -30,13 +30,15 @@ class Servers(SRH):
 def checkRoomInfo(RoomId):
     req = urllib2.Request('http://live.bilibili.com/live/getInfo?roomid=' + str(RoomId))
     req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.8.1.14) Gecko/20080404 (FoxPlus) Firefox/2.0.0.14')
-    response = urllib2.urlopen(req)
+    try：
+        response = urllib2.urlopen(req)
+    except:
+        return -1
     thepage = response.read().decode('utf-8')
     dictRes = json.loads(thepage)
-    try:
-        # print dictRes["data"]['_status']
+    if dictRes["data"]['_status'] == "on" or dictRes["data"]['_status'] == "off":
         return dictRes
-    except:
+    else:
         return -1
 
 def downloadVideo(RoomId):
@@ -45,7 +47,14 @@ def downloadVideo(RoomId):
 def updateText(id):
     req = urllib2.Request("http://live.bilibili.com/"+str(id))
     req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.8.1.14) Gecko/20080404 (FoxPlus) Firefox/2.0.0.14')
-    response = urllib2.urlopen(req)
+    try:
+        response = urllib2.urlopen(req)
+    except:
+        try:
+            response = urllib2.urlopen(req)
+        except:     
+            return -1
+            print "无法获取房间"+str(id)+"的真实ID！请手动检查！"
     thepage = response.read().decode('utf-8')
     pattern = re.compile(r'var ROOMID = \d*?;')
     matchRes = pattern.findall(thepage)
@@ -115,7 +124,6 @@ else:
                             roomStatus[temp] = 1
                 else:
                     recentResult += ["房间"+OriginRoomId[temp]+"的状态出错!\n"]
-            
             temp += 1
             time.sleep(1)
         time.sleep(60)
